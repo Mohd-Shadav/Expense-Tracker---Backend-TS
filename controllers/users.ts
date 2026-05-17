@@ -47,3 +47,48 @@ export const signup =async (req:Request,res:Response)=>{
 }
 
 
+export const login = async(req:Request,res:Response)=>{
+    try{
+        let {email,password} = req.body;
+
+        let user = await userSchema.findOne({email})
+
+        if(!user) return res.status(404).json({message:"User Not Found"})
+        
+            bcrypt.compare(password,user.password,(err,result)=>{
+        if(err) return res.status(404).json({message:"Internal error in password checking"})
+                   
+
+            if(result){
+                let token = jwt.sign({email},process.env.SECRETKEY as string)
+            res.cookie("token",token,{
+                httpOnly:true,
+                expires:new Date(Date.now()+7*24*60*60*1000) 
+            })
+
+               
+            const userWithoutPassword = {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                avatar: user.avatar
+            };
+
+            return res.status(200).json({
+                success: true,
+                user: userWithoutPassword
+            });
+        }else{
+        return res.status(400).json({
+            message:"Invalid Password"
+        })
+        }
+            })
+
+    }catch(error){
+        return res.status(500).json({
+            message:`Internal Server Error : ${error}`
+        })
+    }
+}
+
