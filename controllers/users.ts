@@ -50,6 +50,7 @@ export const signup =async (req:Request,res:Response)=>{
 export const login = async(req:Request,res:Response)=>{
     try{
         let {email,password} = req.body;
+        // console.log(req.body)
 
         let user = await userSchema.findOne({email})
 
@@ -60,7 +61,7 @@ export const login = async(req:Request,res:Response)=>{
                    
 
             if(result){
-                let token = jwt.sign({email},process.env.SECRETKEY as string)
+                let token = jwt.sign({email,userId:user._id},process.env.SECRETKEY as string)
             res.cookie("token",token,{
                 httpOnly:true,
                 expires:new Date(Date.now()+7*24*60*60*1000) 
@@ -73,6 +74,8 @@ export const login = async(req:Request,res:Response)=>{
                 email: user.email,
                 avatar: user.avatar
             };
+
+            console.log(userWithoutPassword)
 
             return res.status(200).json({
                 success: true,
@@ -92,3 +95,40 @@ export const login = async(req:Request,res:Response)=>{
     }
 }
 
+
+export const authentication = async(req:any,res:any)=>{
+    try{
+
+        let {userId} = req.user;
+        
+
+        let user = await userSchema.findOne({_id:userId}).select("-password")
+       
+
+        if(!user){
+            return res.status(404).json({
+                message:"User not found"
+            })
+        }
+
+        res.status(200).json(user);
+
+    }catch(error){
+        return res.status(500).json({
+            message:error
+        })
+    }
+}
+
+
+export const logout = (req:any,res:any)=>{
+
+
+    res.clearCookie("token")
+    return res.status(200).json({
+        success:true,
+        message:"Logout Successful"
+    })
+    
+
+}
