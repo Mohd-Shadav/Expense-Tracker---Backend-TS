@@ -5,6 +5,7 @@ const isLoggedIn = (req:any,res:any,next:any)=>{
       
         let token = req.cookies.token;
         
+        
         if(!token){ 
             return res.status(404).json({
                 message:"UnAuthenticated User"

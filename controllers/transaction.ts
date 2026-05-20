@@ -1,13 +1,86 @@
 import { Request,Response } from "express"
-const addTransaction = (req:Request,res:Response)=>{
+import transactionSchema from "../models/transactionSchema";
+import categorySchema from "../models/categorySchema";
+import { AuthRequest } from "./requestInterface";
+export const addTransaction =async (req:AuthRequest,res:Response)=>{
 
     try{
-        const data = req.body;
+       
+        let {userId} = req.user
+
+        
+
+
+        const {title,amount,category,type,date,notes,paymentMethod} = req.body;
+        
+        
+   
+          const categoryDoc = await categorySchema.findOne({
+  name:category
+});
+
+
+if (!categoryDoc) {
+  return res.status(404).json({
+    message: "Category not found",
+  });
+}
+
+
+
+const transaction = await transactionSchema.create({
+  title,
+  amount,
+  category: categoryDoc._id,
+  type,
+  paymentMethod,
+  date,
+  notes,
+  user: userId,
+});
+
+if(transaction){
+    return res.status(200).json({
+        success:true
+    })
+}
         
 
     }catch(err){
+        return res.status(500).json({
+            message:err
+        })
 
     }
     
 
+}
+
+export const getTransactions = async (req:AuthRequest,res:Response)=>{
+
+  try{
+    let {userId} = req.user
+    
+
+    let data = await transactionSchema.find({user:userId}).populate("category")
+    
+
+    if(!data) return res.status(404).json({message:"Not Found"})
+
+    if(data.length<=0){
+        return res.status(200).json({
+            message:"No Interaction Added"
+        })
+    }   
+
+    return res.status(200).json(data);
+    
+
+
+  }catch(error){
+    return res.status(500).json({
+        message:error
+    })
+
+  }
 }

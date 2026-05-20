@@ -6,7 +6,7 @@ export interface ITransaction extends Document{
     amount:number,
     type:"income" | "expense",
     category:Types.ObjectId,
-    note?:string,
+    notes?:string,
     date:Date,
     paymentMethod?:"UPI"|"cash"|"bank"|"card",
     createdAt:Date
@@ -37,9 +37,10 @@ const transactionSchema = new Schema<ITransaction>(
         },
         category:{
             type:Schema.Types.ObjectId,
+            ref:"category",
             required:true
         },
-        note:{
+        notes:{
             type:String
         },
         date:{

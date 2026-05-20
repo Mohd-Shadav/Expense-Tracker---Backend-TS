@@ -2,6 +2,8 @@ import express, {Request,Response} from "express";
 const app = express();
 require('dotenv').config();
 import userRoutes from "./routes/userRoutes"
+import transactionRoutes from "./routes/transactionRoutes"
+import categoryRoutes from "./routes/categoryRoutes"
 import cors from "cors"
 
 import connectDB from "./database/db"
@@ -22,6 +24,8 @@ res.send("sab sahi hai")
 })
 
 app.use('/user',userRoutes)
+app.use('/transaction',transactionRoutes)
+app.use('/category',categoryRoutes)
 
 app.listen(3000,()=>{
 console.log("port :",3000)
