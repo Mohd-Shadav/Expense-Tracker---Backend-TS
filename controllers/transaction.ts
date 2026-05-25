@@ -81,6 +81,24 @@ export const getTransactions = async (req:AuthRequest,res:Response)=>{
   }
 }
 
+export const updateTransaction = async(req:AuthRequest,res:Response)=>{
+  try{
+    let {userId} = req.user;
+    let {_id,title,amount,type,category,paymentMethod,date,notes} = req.body
+
+
+
+    let transaction = await transactionSchema.findOneAndUpdate({_id,user:userId},{title,amount,type,category,paymentMethod,date,notes},{new:true});
+
+    if(!transaction) return res.status(400).json({message:"Not Found"})
+
+      return res.status(200).send("Done")
+
+  }catch(Err){
+    return res.status(500).json({message:Err})
+  }
+}
+
 export const deleteTransaction = async (req:AuthRequest,res:Response)=>{
   try{
 

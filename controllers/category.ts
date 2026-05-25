@@ -57,3 +57,26 @@ export const getCategories = async(req:AuthRequest,res:Response)=>{
     }
 
 }
+
+export const deleteCategory = async (req:AuthRequest,res:Response)=>{
+  
+    try{
+        let {userId} = req.user
+        let {id} = req.body;
+        
+        
+        
+        let data = await categorySchema.deleteOne({user:userId,_id:id});
+
+        if(!data) return res.status(404).json({message:"Category Not Found"})
+
+            return res.status(200).json({
+                success:true
+            })
+
+    }catch(err){
+        return res.status(500).json({
+            message:err
+        })
+    }
+}
