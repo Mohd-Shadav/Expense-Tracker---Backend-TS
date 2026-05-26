@@ -75,7 +75,7 @@ export const login = async(req:Request,res:Response)=>{
                 avatar: user.avatar
             };
 
-            console.log(userWithoutPassword)
+            
 
             return res.status(200).json({
                 success: true,

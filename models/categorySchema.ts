@@ -1,6 +1,7 @@
 import mongoose,{Schema,Document, Types} from "mongoose"
 
 export interface ICategory extends Document{
+    
     user:Types.ObjectId,
     name:string,
     type:"income"|"expense"|"prefer no to say",
