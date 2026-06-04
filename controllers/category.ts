@@ -58,6 +58,30 @@ export const getCategories = async(req:AuthRequest,res:Response)=>{
 
 }
 
+export const updateCategory = async (req:AuthRequest,res:Response)=>{
+    try{
+        let {userId} = req.user;
+        let {_id,name,type,color,icon} = req.body;
+        console.log(req.body)
+
+        let category = await categorySchema.find({user:userId,_id:_id},{
+            name,
+            type,
+            color,
+            icon
+
+        },{returnDocument:"after"})
+
+         if(!category) return res.status(400).json({message:"Not Found"})
+
+        return res.status(200).send("Done")
+
+
+    }catch(error){
+        alert(error)
+    }
+}
+
 export const deleteCategory = async (req:AuthRequest,res:Response)=>{
   
     try{
