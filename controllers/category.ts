@@ -62,15 +62,17 @@ export const updateCategory = async (req:AuthRequest,res:Response)=>{
     try{
         let {userId} = req.user;
         let {_id,name,type,color,icon} = req.body;
-        console.log(req.body)
+        // console.log(req.body)
 
-        let category = await categorySchema.find({user:userId,_id:_id},{
+        let category = await categorySchema.findOneAndUpdate({user:userId,_id:_id},{
             name,
             type,
             color,
             icon
 
         },{returnDocument:"after"})
+
+       
 
          if(!category) return res.status(400).json({message:"Not Found"})
 
