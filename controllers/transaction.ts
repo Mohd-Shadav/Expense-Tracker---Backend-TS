@@ -247,7 +247,7 @@ export const getExpenseCategory =  async (req:AuthRequest,res:Response)=>{
 
 export const getRecentTransactions = async (req:AuthRequest,res:Response)=>{
    try{
-    let {userId} = req.user
+    let {userId} = req.user 
     
 
     let data = await transactionSchema.find({user:userId}).populate("category").limit(5).sort({createdAt:-1})
