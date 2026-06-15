@@ -250,7 +250,7 @@ export const getRecentTransactions = async (req:AuthRequest,res:Response)=>{
     let {userId} = req.user 
     
 
-    let data = await transactionSchema.find({user:userId}).populate("category").limit(10).sort({createdAt:-1})
+    let data = await transactionSchema.find({user:userId}).populate("category").limit(5).sort({createdAt:-1})
     
 
     if(!data) return res.status(404).json({message:"Not Found"})
