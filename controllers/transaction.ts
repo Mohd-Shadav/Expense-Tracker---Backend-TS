@@ -268,3 +268,67 @@ export const getRecentTransactions = async (req:AuthRequest,res:Response)=>{
 
   }
 }
+
+
+export const getIncomeAnalysis =async (req:AuthRequest,res:Response)=>{
+
+  try{
+    let {userId}  = req.user
+    const now = new globalThis.Date()
+    let currenMonth = new Date(now.getFullYear(),now.getMonth()+1,1)
+
+    let res = await transactionSchema.aggregate([
+      {
+        $match:{
+          user:new mongoose.Types.ObjectId(userId),
+          type:"income"
+
+        },
+        $facet:{
+  currentMonth: [
+    {
+      $match: {
+         date: {
+      $gte: ISODate("2026-06-01T00:00:00.000Z"),
+      $lt: ISODate("2026-07-01T00:00:00.000Z")
+    }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount"
+        }
+      }
+    }
+  ],
+  previousMonth: [
+    {
+      $match: {
+        date: {
+      $gte: ISODate("2026-05-01T00:00:00.000Z"),
+      $lt: ISODate("2026-06-01T00:00:00.000Z")
+    }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount"
+        }
+      }
+    }
+  ]
+}
+}
+    ])
+
+    console.log(res)
+   
+  } catch(err){
+      
+    }
+
+}
