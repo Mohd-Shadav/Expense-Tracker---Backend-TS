@@ -275,59 +275,174 @@ export const getIncomeAnalysis =async (req:AuthRequest,res:Response)=>{
   try{
     let {userId}  = req.user
     const now = new globalThis.Date()
-    let currenMonth = new Date(now.getFullYear(),now.getMonth()+1,1)
+    let currentMonthStart = new Date(now.getFullYear(),now.getMonth(),1)
+    let currentMonthEnd = new Date(now.getFullYear(),now.getMonth()+1,1)
 
-//     let res = await transactionSchema.aggregate([
-//       {
-//         $match:{
-//           user:new mongoose.Types.ObjectId(userId),
-//           type:"income"
 
-//         },
-//         $facet:{
-//   currentMonth: [
-//     {
-//       $match: {
-//          date: {
-//       $gte: ISODate("2026-06-01T00:00:00.000Z"),
-//       $lt: ISODate("2026-07-01T00:00:00.000Z")
-//     }
-//       }
-//     },
-//     {
-//       $group: {
-//         _id: null,
-//         total: {
-//           $sum: "$amount"
-//         }
-//       }
-//     }
-//   ],
-//   previousMonth: [
-//     {
-//       $match: {
-//         date: {
-//       $gte: ISODate("2026-05-01T00:00:00.000Z"),
-//       $lt: ISODate("2026-06-01T00:00:00.000Z")
-//     }
-//       }
-//     },
-//     {
-//       $group: {
-//         _id: null,
-//         total: {
-//           $sum: "$amount"
-//         }
-//       }
-//     }
-//   ]
-// }
-// }
-//     ])
+    let previousMonthStart = new Date(now.getFullYear(),now.getMonth()-1,1)
+    let previousMonthEnd = new Date(now.getFullYear(),now.getMonth(),1)
+    
+    let data = await transactionSchema.aggregate([
+      {
+        $match:{
+          user:new mongoose.Types.ObjectId(userId),
+          type:"income"
 
-//     console.log(res)
+        }
+      },
+        {
+        $facet:{
+  currentMonth: [
+    {
+      $match: {
+         date: {
+      $gte: currentMonthStart,
+      $lt: currentMonthEnd
+    }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount"
+        }
+      }
+    }
+    ,
+    {
+      $project:{
+        _id:0,
+        total:1
+      }
+    }
+  ],
+  previousMonth: [
+    {
+      $match: {
+        date: {
+      $gte: previousMonthStart,
+      $lt: previousMonthEnd
+    }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount"
+        }
+      }
+    }
+     ,
+    {
+      $project:{
+        _id:0,
+        total:1
+      }
+    }
+  ]
+}
+        }
+
+    ])
+
+   
+    return res.status(200).json(data)
    
   } catch(err){
+    return res.status(500).json({
+      message:"Internal Server Error"
+    })
+      
+    }
+
+}
+
+export const getExpenseAnalysis =async (req:AuthRequest,res:Response)=>{
+
+  try{
+    let {userId}  = req.user
+    const now = new globalThis.Date()
+    let currentMonthStart = new Date(now.getFullYear(),now.getMonth(),1)
+    let currentMonthEnd = new Date(now.getFullYear(),now.getMonth()+1,1)
+
+
+    let previousMonthStart = new Date(now.getFullYear(),now.getMonth()-1,1)
+    let previousMonthEnd = new Date(now.getFullYear(),now.getMonth(),1)
+    
+    let data = await transactionSchema.aggregate([
+      {
+        $match:{
+          user:new mongoose.Types.ObjectId(userId),
+          type:"expense"
+
+        }
+      },
+        {
+        $facet:{
+  currentMonth: [
+    {
+      $match: {
+         date: {
+      $gte: currentMonthStart,
+      $lt: currentMonthEnd
+    }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount"
+        }
+      }
+    }
+    ,
+    {
+      $project:{
+        _id:0,
+        total:1
+      }
+    }
+  ],
+  previousMonth: [
+    {
+      $match: {
+        date: {
+      $gte: previousMonthStart,
+      $lt: previousMonthEnd
+    }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        total: {
+          $sum: "$amount"
+        }
+      }
+    }
+     ,
+    {
+      $project:{
+        _id:0,
+        total:1
+      }
+    }
+  ]
+}
+        }
+
+    ])
+
+   
+    return res.status(200).json(data)
+   
+  } catch(err){
+    return res.status(500).json({
+      message:"Internal Server Error"
+    })
       
     }
 
