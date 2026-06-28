@@ -7,7 +7,7 @@ const isLoggedIn = (req:any,res:any,next:any)=>{
         
         if(!token){ 
             return res.status(404).json({
-                message:"UnAuthenticated User" 
+                message:"UnAuthenticated User"
             })
         }
 
