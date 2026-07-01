@@ -26,10 +26,6 @@ const isLoggedIn = (req:any,res:any,next:any)=>{
         })
     }
 
-
-
-
-
 }
 
 export default isLoggedIn;
