@@ -25,7 +25,6 @@ const isLoggedIn = (req:any,res:any,next:any)=>{
             message: err
         })
     }
-
 }
 
 export default isLoggedIn;
